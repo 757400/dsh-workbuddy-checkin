@@ -1,5 +1,0 @@
-# dsh-workbuddy-checkin 的挂载声明
-# DSH 启动时按 bundle 层叠加：把本插件插进 profile 的配置树。
-- insert:
-    - id: dsh-workbuddy-checkin
-      name: dsh-workbuddy-checkin
