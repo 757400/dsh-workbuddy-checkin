@@ -1,0 +1,50 @@
+# 依赖
+node_modules/
+.pnpm-store/
+
+# 构建与打包产物
+dist/
+*.tgz
+*.tar.gz
+*.zip
+
+# 日志
+*.log
+logs/
+
+# 本机配置与运行时数据
+.state/
+state.json
+config.json
+.workbuddy-checkin/
+.workbuddy-auth*
+*.info
+
+# 凭据，一律不入库
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.credentials.yaml
+.secrets.local
+
+# 测试与覆盖率
+coverage/
+.nyc_output/
+
+# 编辑器与系统
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时文件
+tmp/
+temp/
+*.tmp
