@@ -45,7 +45,7 @@ Search for `dsh-workbuddy-checkin`, install, restart DSH.
 ### From GitHub
 
 ```bash
-git clone https://github.com/WangFugui-cmd/dsh-workbuddy-checkin.git
+git clone https://github.com/757400/dsh-workbuddy-checkin.git
 ```
 
 Add it to your DSH profile:

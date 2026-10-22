@@ -45,7 +45,7 @@ Authorization: Bearer <accessToken>
 
 ```bash
 # 1) 拿到源码
-git clone https://github.com/WangFugui-cmd/dsh-workbuddy-checkin.git
+git clone https://github.com/757400/dsh-workbuddy-checkin.git
 ```
 
 然后把它加进 DSH profile 的依赖：

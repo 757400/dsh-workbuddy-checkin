@@ -24,14 +24,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WangFugui-cmd/dsh-workbuddy-checkin.git"
+    "url": "git+https://github.com/757400/dsh-workbuddy-checkin.git"
   },
-  "homepage": "https://github.com/WangFugui-cmd/dsh-workbuddy-checkin#readme",
+  "homepage": "https://github.com/757400/dsh-workbuddy-checkin#readme",
   "bugs": {
-    "url": "https://github.com/WangFugui-cmd/dsh-workbuddy-checkin/issues"
+    "url": "https://github.com/757400/dsh-workbuddy-checkin/issues"
   },
   "author": {
-    "name": "WangFugui-cmd"
+    "name": "757400"
   },
   "dsh": {
     "bundle": {
