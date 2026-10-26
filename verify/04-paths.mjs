@@ -85,12 +85,19 @@ check.ok(
   check.eq('有 LOCALAPPDATA 时登录文件路径跟随它', withLocal.auth, expectedAuth)
   check.eq('状态文件路径跟随 homedir', withLocal.state, path.join(fakeHome, '.dsh', '.workbuddy-checkin', 'state.json'))
 
-  // LOCALAPPDATA 缺失时退回 homedir/AppData/Local
+  // LOCALAPPDATA 缺失时按平台退回默认目录：
+  //   win32      → <homedir>/AppData/Local
+  //   其它平台   → <homedir>/.local/share
+  // 这里必须跟随平台，不能写死 Windows 形态，否则 Linux/macOS 上（含 GitHub Actions
+  // 的 ubuntu-latest）这条断言必然失败，而它原本要验的恰恰就是「按平台分流」本身。
+  const fallbackDir = process.platform === 'win32'
+    ? path.join(fakeHome, 'AppData', 'Local')
+    : path.join(fakeHome, '.local', 'share')
   const withoutLocal = derive(sandbox.os, sandbox.path, { env: {}, platform: process.platform })
   check.eq(
-    '缺 LOCALAPPDATA 时退回 homedir/AppData/Local',
+    '缺 LOCALAPPDATA 时按平台退回默认目录',
     withoutLocal.auth,
-    path.join(fakeHome, 'AppData', 'Local', ...['CodeBuddyExtension', 'Data', 'Public', 'auth', 'workbuddy-desktop.info']),
+    path.join(fallbackDir, ...['CodeBuddyExtension', 'Data', 'Public', 'auth', 'workbuddy-desktop.info']),
   )
 
   // DSH_HOME 覆盖优先于 homedir
@@ -105,11 +112,14 @@ check.ok(
 {
   const cred = await import(new URL('../lib/credentials.mjs', import.meta.url).href)
   const report = await import(new URL('../lib/report.mjs', import.meta.url).href)
+  // 期望前缀同样要跟随平台：Windows 是 AppData\\Local，其它平台是 .local/share。
+  // 写死 Windows 形态会让这条断言在 Linux/macOS 上恒为 false。
+  const expectedPrefix = process.platform === 'win32'
+    ? path.join(os.homedir(), 'AppData', 'Local')
+    : path.join(os.homedir(), '.local', 'share')
   check.ok(
     '真实登录文件路径位于当前用户 LOCALAPPDATA',
-    cred.DEFAULT_DESKTOP_AUTH_FILE.toLowerCase().startsWith(
-      (process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local')).toLowerCase(),
-    ),
+    cred.DEFAULT_DESKTOP_AUTH_FILE.toLowerCase().startsWith(expectedPrefix.toLowerCase()),
     cred.DEFAULT_DESKTOP_AUTH_FILE,
   )
   const expectedState = path.join(
