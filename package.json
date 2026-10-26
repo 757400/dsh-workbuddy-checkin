@@ -1,6 +1,6 @@
 {
   "name": "dsh-workbuddy-checkin",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "DSH plugin: automatically claim the WorkBuddy daily check-in on DSH startup, straight over the public HTTP API, without running the WorkBuddy desktop client.",
   "type": "module",
   "main": "lib/index.mjs",
