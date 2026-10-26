@@ -1,17 +1,21 @@
 name: publish
 
+
 # 打 tag（v1.0.1 这类）时自动发布到 npm，并创建一个 GitHub Release。
 # 前置：在 Settings -> Secrets and variables -> Actions 里配置 NPM_TOKEN，
 # 内容是一个带 Automation 或 Publish 权限的 npm Granular Access Token。
 # 只有 tag 触发的运行会发布，往 main 推代码不会改动 npm 上的版本。
+
 
 on:
   push:
     tags:
       - 'v*'
 
+
 permissions:
   contents: read
+
 
 jobs:
   verify:
@@ -21,9 +25,18 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # 钉到具体补丁版：package.json 的 engines 要求 ^22.19.0，
+          # 用 22 会解析到 latest-22，历史上拿到过低于 22.19 的版本，
+          # npm run 会因 engines 不匹配直接拒跑（表现为 0s 失败、exit 1）。
+          node-version: 22.19.0
+          check-latest: false
+      - name: Show toolchain
+        run: |
+          node -v
+          npm -v
       - name: Run plugin self-check
-        run: npm run verify
+        run: npm run verify 
+
 
   publish:
     name: publish
@@ -35,22 +48,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22.19.0
           registry-url: https://registry.npmjs.org
+
 
       - name: Check tag matches package.json version
         run: |
-          TAG=${GITHUB_REF_NAME#v}
+          TAG="${GITHUB_REF_NAME#v}"
           PKG=$(node -p "require('./package.json').version")
           printf 'tag=%s package=%s\n' "$TAG" "$PKG"
           [ "$TAG" = "$PKG" ] || { echo "::error::tag and package.json version differ"; exit 1; }
+
 
       - name: Publish to npm
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
