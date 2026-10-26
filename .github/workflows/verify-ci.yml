@@ -1,0 +1,46 @@
+name: verify
+
+
+# 只在 main 分支上把每个验证脚本单独跑成一步。
+# 目的：失败时能直接在步骤列表里看到是哪一个脚本红掉，
+# 而不是笼统地只显示一条 exit code 1。
+
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+
+permissions:
+  contents: read
+
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.19.0
+          check-latest: false
+      - name: Show toolchain
+        run: |
+          node -v
+          npm -v
+          uname -a
+      - name: 01 modules
+        run: node verify/01-modules.mjs
+      - name: 02 config
+        run: node verify/02-config.mjs
+      - name: 03 state
+        run: node verify/03-state.mjs
+      - name: 04 paths
+        run: node verify/04-paths.mjs
+      - name: 05 runner
+        run: node verify/05-runner.mjs
+      - name: 06 secrets
+        run: node verify/06-secrets.mjs
