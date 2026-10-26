@@ -54,8 +54,13 @@ if (Object.keys(byFile).length === files.length) {
   check.ok('导出 CredentialError', typeof cred.CredentialError === 'function')
   check.ok('默认登录文件名正确', cred.DEFAULT_DESKTOP_AUTH_FILE.endsWith('workbuddy-desktop.info'), cred.DEFAULT_DESKTOP_AUTH_FILE)
   check.ok(
-    '登录文件路径落在 LOCALAPPDATA 下',
-    /AppData[\\/]Local[\\/]CodeBuddyExtension/i.test(cred.DEFAULT_DESKTOP_AUTH_FILE),
+    '登录文件路径落在本地数据目录下',
+    // 目录名跟随平台：Windows 是 AppData/Local，类 Unix 是 .local/share。
+    // 写死 Windows 形态会让这条断言在 Linux/macOS 上（含 CI 的 ubuntu-latest）恒为 false。
+    (process.platform === 'win32'
+      ? /AppData[\\/]Local[\\/]CodeBuddyExtension/i
+      : /[\\/]\.local[\\/]share[\\/]CodeBuddyExtension/i
+    ).test(cred.DEFAULT_DESKTOP_AUTH_FILE),
     cred.DEFAULT_DESKTOP_AUTH_FILE,
   )
 
